@@ -1,6 +1,6 @@
 [submodule "src/proj4js"]
 	path = src/proj4js
-	url = ../../../third-party/proj4js.git
+	url = ../../third-party/proj4js.git
 	branch = master
 	ignore = dirty
 [submodule "src/stylesheets"]
