@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Test Container Facets</title>
+		<link rel='stylesheet' type"text/css" href="../../../src/stylesheets/style.css">
+	</head>
+	<body class="db">
+		<div id="grid" class="grid">
+		</div>
+		<script src="../../../src/dojoConfig.js"></script>
+		<script src="../../../src/dojo/dojo.js"></script>
+		<script>
+			require([
+			    'dojo/dom',
+			    'dojo/fx',
+			    "app/ContainerFacets",
+			    'dojo/domReady!'
+			], function (dom, fx, ContainerFacets) {
+
+				var config = {"took":8,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":7417,"max_score":0.0,"hits":[]},"aggregations":{"endemicity":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"Desconocida","doc_count":6539},{"key":"Canaria","doc_count":88},{"key":"Otra","doc_count":78},{"key":"Atlántica","doc_count":43},{"key":"Macaronésica","doc_count":1}]},"interest":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"Uso ornamental","doc_count":6539},{"key":"Especie peligrosa","doc_count":88},{"key":"Otro","doc_count":78},{"key":"Uso industrial","doc_count":43},{"key":"Interés pesquero","doc_count":1}]},"ecology":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"Otro","doc_count":3620},{"key":"Desconocida","doc_count":2958},{"key":"Béntica","doc_count":131},{"key":"Pelágica","doc_count":29},{"key":"Demersal","doc_count":11}]}}},
+
+					config2 = {"took":8,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":7417,"max_score":0.0,"hits":[]},"aggregations":{"endemicity":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"Desconocida","doc_count":6539},{"key":"Canaria","doc_count":88},{"key":"Otra","doc_count":78},{"key":"Atlántica","doc_count":43},{"key":"Macaronésica","doc_count":1}]},"interest":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"Uso ornamental","doc_count":6539},{"key":"Especie peligrosa","doc_count":88},{"key":"Otro","doc_count":78},{"key":"Uso industrial","doc_count":43},{"key":"Interés pesquero","doc_count":1}]}}},
+
+					widget = new ContainerFacets({openFacets: true});
+
+				widget.setConfig(config);
+
+				var node = dom.byId('grid');
+
+				widget.placeAt(node, 'last');
+
+				//widget.setConfig(config2);
+
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Test Filtering Select</title>
+		<link rel='stylesheet' type"text/css" href="../../../src/stylesheets/style.css">
+	</head>
+	<body class="db" style="background-color: rgb(239, 246, 162);">
+		<div id="grid">
+		</div>
+		<script src="../../../src/dojoConfig.js"></script>
+		<script src="../../../src/dojo/dojo.js"></script>
+		<script>
+			require([
+			    'dojo/dom',
+			    'dojo/fx',
+			    'app/FilteringSelect',
+			    'dojo/domReady!'
+			], function (dom, fx, FilteringSelect) {
+
+				var widget = new FilteringSelect();
+
+				var node = dom.byId('grid');
+
+				//SIMULANDO ENVIO
+				var json = {
+					'_shards': {
+						'total': 5,
+						'successful': 5,
+						'failed': 0
+					},
+					'my-suggest':  [{
+						'text': "z",
+						'offset': 0,
+						'length': 1,
+						'options': [
+							{'text': "Zalophotrema", 'score': 1},
+							{'text': "Zalophotrema atlanticum", 'score': 1},
+							{'text': "Zameus", 'score': 1},
+							{'text': "Zanardinia", 'score': 1},
+							{'text': "Zanardinia typus", 'score': 1}
+						],
+						'text': "z"
+					}]
+				};
+
+				widget.placeAt(node, 'last');
+
+				//widget.emit("receivedResults", json);
+
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Test Progress Slider</title>
+		<link rel='stylesheet' type"text/css" href="../../../src/stylesheets/style.css">
+	</head>
+	<body class="db">
+		<div id="grid" class="grid"></div>
+		<script src="../../../src/dojoConfig.js"></script>
+		<script src="../../../src/dojo/dojo.js"></script>
+		<script>
+			require([
+			    'dojo/dom',
+			    'dojo/fx',
+				"dojo/_base/lang",
+			    "app/ProgressSlider",
+			    'dojo/domReady!'
+			], function (dom, fx, lang, ProgressSlider) {
+
+				var node = dom.byId('grid');
+
+				var widget = new ProgressSlider({
+				}).placeAt(node, 'last');
+
+				var widget2 = new ProgressSlider({
+					_setTimeOut: function(value) {
+
+						this.timeOutValue = value;
+					}
+				}).placeAt(node, 'last');
+
+				setTimeout(lang.hitch(this, function() {
+					widget2.emit(widget2.events.PLAY);
+					widget.emit(widget.events.PLAY);
+				}), 1000);
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "name": "Widgets",
+  "version": "0.10.1",
+  "author": "Observatorio Ambiental Granadilla",
+  "homepage": "https://redmic.es",
+  "description": "Colección de widgets para REDMIC",
+  "contributors": [
+    {
+      "name": "Ignacio Lorenzo García",
+      "email": "nacho@oag-fundacion.org"
+    },
+    {
+      "name": "Pedro E. Trujillo Brito",
+      "email": "pedro@redmic.es"
+    },
+    {
+      "name": "Noel Alonso Expósito",
+      "email": "noel@redmic.es"
+    },
+    {
+      "name": "Carlos Alberto González Carballo",
+      "email": "carlos@redmic.es"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://git.redmic.net/redmic-client/widgets.git"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "deepmerge": "^2.0.0",
+    "dijit": "^1.13.0",
+    "dojo": "^1.13.0",
+    "dojo-dstore": "^1.1.2",
+    "leaflet": "^1.2.0",
+    "leaflet-areaselect": "https://github.com/heyman/leaflet-areaselect.git#master",
+    "moment": "^2.19.1",
+    "put-selector": "^0.3.6"
+  },
+  "devDependencies": {
+    "express": "^4.15.3",
+    "glob": "^7.1.2",
+    "grunt": "^1.0.1",
+    "grunt-git": "^1.0.4",
+    "grunt-shell": "^2.1.0",
+    "intern": "^3.4.5",
+    "load-grunt-tasks": "^3.5.2",
+    "morgan": "^1.8.2",
+    "winston": "^2.3.1"
+  },
+  "engines": {
+    "node": ">=4.4",
+    "npm": ">=3.10"
+  },
+  "main": "app",
+  "license": "ISC"
+}
