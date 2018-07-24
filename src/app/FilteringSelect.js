@@ -423,20 +423,6 @@ define([
 
 		_clickFiltering: function() {
 
-			this._setValueInput(this._getValueInput());
-
-			if (this.boxResultsNode && this.boxResultsNode.children.length !== 0) {
-				this._closeResults();
-			} else {
-				this.boxResultsNode && this._cleanChildrenNode(this.boxResultsNode);
-				this._request(this._getValueInput());
-			}
-
-			this.inputNode.focus();
-		},
-
-		/*_clickFiltering: function() {
-
 			if (this.boxResultsNode && this.boxResultsNode.children.length === 0) {
 				this._cleanChildrenNode(this.boxResultsNode);
 				this._setValueInput(this._getValueInput());
@@ -450,7 +436,7 @@ define([
 			}
 
 			this.inputNode.focus();
-		},*/
+		},
 
 		_request: function(textValue, pagination) {
 
