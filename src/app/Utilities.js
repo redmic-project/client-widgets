@@ -223,6 +223,10 @@ define([
 				subObj = obj;
 
 			for (var i = 0; i < propsList.length; i++) {
+				if (!subObj) {
+					return null;
+				}
+
 				subObj = subObj[propsList[i]];
 			}
 
