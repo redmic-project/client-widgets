@@ -65,6 +65,7 @@ define([
 				this.dropDown._popupWrapper.onmouseover = lang.hitch(this, this._stopTimeOut);
 				this.dropDown._popupWrapper.onmouseleave = lang.hitch(this, this._startTimeOut);
 
+				this.dropDownNode.onmouseover = lang.hitch(this, this._stopTimeOut);
 				this.dropDownNode.onmouseleave = lang.hitch(this, this._startTimeOut);
 			} else if (this.dropDown) {
 				this._closePopup();
@@ -74,12 +75,13 @@ define([
 		_closePopup: function(evt) {
 
 			this.openPopup = false;
+			this._stopTimeOut();
 			popup.close(this.dropDown);
 		},
 
 		_startTimeOut: function() {
 
-			this.timeOut = setTimeout(lang.hitch(this, this._closePopup), 1500);
+			this.timeOut = setTimeout(lang.hitch(this, this._closePopup), 500);
 		},
 
 		_stopTimeOut: function() {
