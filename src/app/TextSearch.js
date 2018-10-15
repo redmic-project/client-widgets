@@ -161,7 +161,7 @@ define([
 		_selectKeyCodeArrows: function(keyCode) {
 
 			if (keyCode === 13) {
-				this._clickSearch();
+				this._search();
 			} else if (keyCode === 40) {
 				this._selectNodeFocus(1);
 			} else if (keyCode === 38) {
@@ -211,27 +211,33 @@ define([
 
 			this.buttonSearchNode = put(this.domNode, "div.buttonSearch.border");
 			put(this.buttonSearchNode, "i.fa.fa-search");
-			this.buttonSearchNode.onclick = lang.hitch(this, this._clickSearch);
+			this.buttonSearchNode.onclick = lang.hitch(this, this._onClickSearch);
+		},
+
+		_onClickSearch: function() {
+
+			this._closeSuggestion();
+			this._newSearch(true);
 		},
 
 		_execute: function() {
 
 			this.lastSearch = null;
 
-			this._clickSearch();
+			this._search();
 		},
 
-		_clickSearch: function() {
+		_search: function() {
 
 			this._closeSuggestion();
-			this._newSearch();
+			this._newSearch(false);
 		},
 
-		_newSearch: function() {
+		_newSearch: function(newSearch) {
 
 			var value = this.getValueInput();
 
-			if (this.lastSearch !== value) {
+			if (newSearch || this.lastSearch !== value) {
 				if (!value || value.length > 1) {
 					this.lastSearch = value;
 					this.emit(this.events.NEW_SEARCH, value);

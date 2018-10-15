@@ -22,11 +22,11 @@ define([
 				urlMapBasemap: "https://atlas.redmic.es/geoserver/basemap/wms",
 				layersBasemap: 'Redmic',
 				formatBasemap: 'image/jpeg',
-				latCenter: 28,
-				lonCenter: -16,
-				zoom: 6,
-				widthAreaSelect: 300,
-				heightAreaSelect: 200,
+				latCenter: 28.5,
+				lonCenter: -15.7,
+				zoom: 5,
+				widthAreaSelect: 250,
+				heightAreaSelect: 120,
 				events: {
 					CHANGE: "change",
 					QUERY_MAP: "queryMap",
@@ -50,6 +50,8 @@ define([
 
 		postCreate: function() {
 
+			this.inherited(arguments);
+
 			// initialize map
 			this.map = L.map(this.domNode, {
 				doubleClickZoom: false,
@@ -60,7 +62,6 @@ define([
 			});
 
 			this._center();
-
 			this._addLayerBase();
 			// initialize areaSelect
 			this._addAreaSelect();
@@ -89,7 +90,11 @@ define([
 		_addAreaSelect: function() {
 
 			// Add it to the map
-			this.areaSelect = L.areaSelect({width:this.widthAreaSelect, height:this.heightAreaSelect});
+			this.areaSelect = L.areaSelect({
+				width: this.widthAreaSelect,
+				height: this.heightAreaSelect
+			});
+
 			this.areaSelect.addTo(this.map);
 
 			// Get a callback when the bounds change
@@ -98,7 +103,7 @@ define([
 
 		_addLayer: function(obj) {
 
-			if (obj.tiled == undefined) {
+			if (obj.tiled === undefined) {
 				obj.tiled = false;
 			}
 

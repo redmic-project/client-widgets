@@ -255,7 +255,6 @@ define([
 				this.focusIn = -1;
 				this._deleteValueInputAutocomplete();
 				this.label = cleanSpace(this._getValueInput());
-				//this.reset();
 				this.emit(this.events.CHANGED, cleanSpace(this._getValueInput()));
 			}
 		},
@@ -333,10 +332,6 @@ define([
 
 		_selectAutocompleteNode: function() {
 
-			/*if (this.boxResultsNode.firstChild.getAttribute('data-redmic-id'))
-				this._updateInputAutocomplete(this.boxResultsNode.firstChild.textContent);
-			else
-				this._updateInputAutocomplete(this.boxResultsNode.children[1].textContent);*/
 			this._updateInputAutocomplete('');
 		},
 
@@ -379,11 +374,9 @@ define([
 				this._valid();
 				return true;
 			} else if ((this.label.length > 0) && (this.boxResultsNode && this.boxResultsNode.children.length === 0)) {
-				this._notValid(); // emitir mensaje de valor erroneo
-				//console.log("Valor erroneo");
+				this._notValid();
 			} else if ((this.boxResultsNode && this.boxResultsNode.children.length === 0) || this.required) {
-				this._notValid(); // emitir mensaje de valor requerido
-				//console.log("Se requiere el valor");
+				this._notValid();
 			} else {
 				this._valid();
 				return true;
@@ -529,7 +522,7 @@ define([
 			this._activeInput();
 
 			if (this.boxResultsNode.children.length !== 0) {
-					this._selectAutocompleteNode();
+				this._selectAutocompleteNode();
 			} else if (this._getValueInput().length !== 0) {
 				this.inputAutocompleteNode.value = '';
 			} else {
@@ -634,10 +627,7 @@ define([
 			}
 
 			this.focusIn = spanNode;
-			//this._setValueInput(item);
 			this._labelFocus = item;
-			//this.label = item;
-			//this._updateInputAutocomplete(item);
 			put(spanNode, ".hover");
 		},
 
