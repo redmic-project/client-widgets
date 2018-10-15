@@ -6,5 +6,5 @@
 [submodule "src/stylesheets"]
 	path = src/stylesheets
 	url = ../style.git
-	branch = dev
+	branch = master
 	ignore = dirty
