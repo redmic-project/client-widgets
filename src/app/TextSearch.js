@@ -235,7 +235,7 @@ define([
 
 		_newSearch: function(newSearch) {
 
-			var value = this.getValueInput();
+			var value = this.getValueInput().trim();
 
 			if (newSearch || this.lastSearch !== value) {
 				if (!value || value.length > 1) {
