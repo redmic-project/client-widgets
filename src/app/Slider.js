@@ -55,7 +55,8 @@ define([
 			}).placeAt(this.domNode);
 
 			this.rule = new HorizontalRule({
-				'class': 'horizontalRuleForm'
+				'class': 'horizontalRuleForm',
+				count: this.labels ? this.labels.length : this.countRuleLabels
 			}).placeAt(this.domNode);
 
 			this.ruleLabels = new HorizontalRuleLabels({
@@ -140,6 +141,10 @@ define([
 
 			if (!value) {
 				value = this._fixValues(this.slider.value);
+			}
+
+			if (this.labels && this.labels[value - 1] !== undefined) {
+				value = this.labels[value - 1];
 			}
 
 			this.slider.sliderHandle.setAttribute('title', value + this.unit);
