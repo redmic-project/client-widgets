@@ -56,5 +56,5 @@
     "npm": ">=3.10"
   },
   "main": "app",
-  "license": "ISC"
+  "license": "Apache-2.0"
 }
