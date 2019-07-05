@@ -38,6 +38,13 @@ define([
 			this.query = {};
 		},
 
+		postCreate: function() {
+
+			this.domNode.removeAttribute('widgetId');
+
+			this.inherited(arguments);
+		},
+
 		setConfig: function(config) {
 
 			this.config = config;
