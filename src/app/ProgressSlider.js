@@ -86,6 +86,10 @@ define([
 
 		postCreate: function() {
 
+			this.domNode.removeAttribute('widgetId');
+
+			this.inherited(arguments);
+
 			this._initialize();
 		},
 
@@ -140,6 +144,8 @@ define([
 				onChange: lang.hitch(this, this._changeValue),
 				onClick: lang.hitch(this, this._clickSlider)
 			}).placeAt(this.containerBarNode);
+
+			this.slider.domNode.removeAttribute('widgetId');
 
 			this.slider.sliderHandle.onmousedown = lang.hitch(this, this._onMouseDownSlider);
 			this.slider.progressBar.onmousedown = lang.hitch(this, this._onMouseDownSlider);

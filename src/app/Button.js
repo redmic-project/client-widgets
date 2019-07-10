@@ -42,6 +42,8 @@ define([
 
 		postCreate: function() {
 
+			this.domNode.removeAttribute('widgetId');
+
 			this.inherited(arguments);
 
 			put(this.domNode, this.classDefault);
