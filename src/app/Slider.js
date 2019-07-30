@@ -1,45 +1,40 @@
 define([
-	"dojo/_base/declare"
-	, "dijit/_WidgetBase"
-	, "dojo/_base/lang"
-	, "dojo/Evented"
-	, "dijit/form/HorizontalSlider"
-	, "dijit/form/HorizontalRule"
-	, "dijit/form/HorizontalRuleLabels"
-	, "put-selector/put"
-	, "./Utilities"
+	'dijit/_WidgetBase'
+	, 'dijit/form/HorizontalSlider'
+	, 'dijit/form/HorizontalRule'
+	, 'dijit/form/HorizontalRuleLabels'
+	, 'dojo/_base/declare'
+	, 'dojo/_base/lang'
+	, 'dojo/Evented'
+	, 'put-selector/put'
+	, './Utilities'
 ], function(
-	declare
-	, _WidgetBase
+	_WidgetBase
+	, HorizontalSlider
+	, HorizontalRule
+	, HorizontalRuleLabels
+	, declare
 	, lang
 	, Evented
-	, Slider
-	, Rule
-	, RuleLabels
 	, put
 	, Utilities
 ) {
-	return declare([_WidgetBase, Evented], {
 
-		//	summary:
-		//		Widget
-		//
-		// description:
-		//
+	return declare([_WidgetBase, Evented], {
 
 		constructor: function(args) {
 
 			this.config = {
 				countRuleLabels: 7,
 				events: {
-					SET_MIN_MAX: "setMinMax",
-					SET_VALUE: "setValue",
-					INITIALIZE: "initialize"
+					SET_MIN_MAX: 'setMinMax',
+					SET_VALUE: 'setValue',
+					INITIALIZE: 'initialize'
 				},
 				precision: 2,
 				_changeValueTimeout: 200,
-				unit: "",
-				valueMinMax: null,
+				unit: '',
+				valueMinMax: [],
 				valueDefault: null
 			};
 
@@ -52,31 +47,34 @@ define([
 
 		postCreate: function() {
 
-			this._initialize();
-		},
+			this.domNode.removeAttribute('widgetId');
 
-		_initialize: function() {
+			this.inherited(arguments);
 
-			this.slider = new Slider({
+			this.slider = new HorizontalSlider({
 				'class': 'sliderForm',
 				showButtons: false,
+				discreteValues: this.labels ? this.labels.length : null,
 				onChange: lang.hitch(this, this._changeSlider)
 			}).placeAt(this.domNode);
 
-			this.rule = new Rule({
+			this.rule = new HorizontalRule({
 				'class': 'horizontalRuleForm',
-				count: this.countRuleLabels
+				count: this.labels ? this.labels.length : this.countRuleLabels
 			}).placeAt(this.domNode);
 
-			this.ruleLabels = new RuleLabels({
-				'class': 'horizontalRuleLabelsForm'
+			this.ruleLabels = new HorizontalRuleLabels({
+				'class': 'horizontalRuleLabelsForm',
+				count: this.labels ? this.labels.length : this.countRuleLabels
 			}).placeAt(this.domNode);
 
-			if (this.valueMinMax)
+			if (this.valueMinMax.length) {
 				this.setMinMaxSlider(this.valueMinMax);
+			}
 
-			if (this.valueDefault || this.valueMinMax)
+			if (this.valueDefault || this.valueMinMax) {
 				this.setValueSlider(this.valueDefault || this.valueMinMax[1]);
+			}
 		},
 
 		initializeSlider: function(valueMinMax, valueDefault) {
@@ -95,32 +93,36 @@ define([
 			obj[1] = this._calc((value[0] + value[1]) / 2);
 			obj[2] = this._calc(value[1]);
 
-			this.setHorizontalRuleLabelsForm(obj);
+			this.setHorizontalRuleLabelsForm(this.labels || obj);
 		},
 
 		_calc: function(num) {
 
-			if (Math.abs(num) >= 1000)
-				return (num / 1000) + "K";
-			else
+			if (Math.abs(num) >= 1000) {
+				return (num / 1000) + 'K';
+			} else {
 				return num;
+			}
 		},
 
 		setHorizontalRuleLabelsForm: function(labels) {
 
 			this.ruleLabels.setAttribute('labels', labels);
 
-			for (var i = 0; i < labels.length; i++)
+			for (var i = 0; i < labels.length; i++) {
 				this.ruleLabels.domNode.children[i].innerText = labels[i] + this.unit;
+			}
 		},
 
 		_changeSlider: function(evt) {
 
-			if (this._lastValue && Utilities.isEqual(this._lastValue, evt))
+			if (this._lastValue && Utilities.isEqual(this._lastValue, evt)) {
 				return;
+			}
 
 			clearTimeout(this._changeValueTimeoutHandler);
 			this._changeValueTimeoutHandler = setTimeout(lang.hitch(this, function(evt) {
+
 				this.setValueTextSlider();
 				this._lastValue = evt;
 				this.onChange(this._fixValues(this.slider.value), evt);
@@ -141,16 +143,22 @@ define([
 
 		setValueTextSlider: function(value) {
 
-			if (!value)
+			if (!value) {
 				value = this._fixValues(this.slider.value);
+			}
+
+			if (this.labels && this.labels[value - 1] !== undefined) {
+				value = this.labels[value - 1];
+			}
 
 			this.slider.sliderHandle.setAttribute('title', value + this.unit);
 		},
 
 		_fixValues: function(value) {
 
-			if (!value)
+			if (!value) {
 				return value;
+			}
 
 			return parseFloat(value.toFixed(this.precision));
 		},
@@ -161,7 +169,7 @@ define([
 			this.rule.set('disabled', true);
 			this.ruleLabels.set('disabled', true);
 
-			put(this.domNode, ".dijitSliderDisabled");
+			put(this.domNode, '.dijitSliderDisabled');
 		},
 
 		enable: function(value) {
@@ -170,7 +178,7 @@ define([
 			this.rule.set('disabled', false);
 			this.ruleLabels.set('disabled', false);
 
-			put(this.domNode, "!dijitSliderDisabled");
+			put(this.domNode, '!dijitSliderDisabled');
 		}
 	});
 });
