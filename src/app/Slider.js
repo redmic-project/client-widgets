@@ -47,6 +47,10 @@ define([
 
 		postCreate: function() {
 
+			this.domNode.removeAttribute('widgetId');
+
+			this.inherited(arguments);
+
 			this.slider = new HorizontalSlider({
 				'class': 'sliderForm',
 				showButtons: false,
