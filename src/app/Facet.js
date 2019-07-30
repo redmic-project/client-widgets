@@ -33,6 +33,13 @@ define([
 			this._render();
 		},
 
+		postCreate: function() {
+
+			this.domNode.removeAttribute('widgetId');
+
+			this.inherited(arguments);
+		},
+
 		_render: function() {
 
 			this.containerBucketsNode = put("div[data-redmic-id=$].bucket", this.title);

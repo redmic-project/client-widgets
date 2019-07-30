@@ -83,18 +83,16 @@ define([
 
 		postCreate: function() {
 
+			this.domNode.removeAttribute('widgetId');
+
+			this.inherited(arguments);
+
 			if (this.optionActive) {
 				this._createOption();
 			}
 
 			this._createTextSearch();
-
 			this._createButtonSearch();
-		},
-
-		startup: function() {
-
-			this.inherited(arguments);
 		},
 
 		_createTextSearch: function() {
