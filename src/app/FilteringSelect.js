@@ -291,10 +291,13 @@ define([
 
 		_selectResult: function() {
 
-			if (this.focusIn !== -1){
-				if (this.focusIn.getAttribute('data-redmic-id')) {
+			if (this.focusIn !== -1) {
+				var itemId = this.focusIn.getAttribute('data-redmic-id'),
+					itemValue = isNaN(itemId) ? itemId : parseInt(itemId, 10);
+
+				if (itemId) {
 					this._activeRemoveText();
-					this.set("value", parseInt(this.focusIn.getAttribute('data-redmic-id'), 10));
+					this.set("value", itemValue);
 					this.label = cleanSpace(this._labelFocus);
 					this._setValueInput(this._labelFocus);
 					this.validate();
