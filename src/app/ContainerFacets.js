@@ -19,6 +19,7 @@ define([
 		constructor: function(args){
 
 			this.config = {
+				maxInitialEntries: 5,
 				aggs: null,
 				openFacets: false,
 				order: null,
@@ -98,7 +99,8 @@ define([
 						title: (this.i18n && this.i18n[item]) ? this.i18n[item] : item,
 						i18n: this.i18n,
 						open: open,
-						config: content
+						config: content,
+						maxInitialEntries: this.maxInitialEntries
 					}).placeAt(this.domNode);
 
 				this.instance[item] = {
