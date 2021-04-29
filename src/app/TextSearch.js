@@ -34,6 +34,8 @@ define([
 				originalValue: '',
 				suggestFields: null,
 				sizeSuggets: null,
+				suggestionsContainerClass: 'suggestions',
+				hiddenClass: 'hidden',
 				events: {
 					SEARCH_CHANGED: "searchChanged",
 					NEW_SEARCH: "newSearch",
@@ -45,26 +47,25 @@ define([
 					CLOSED: "closed",
 					RESET: "reset",
 					OPEN: "open",
-					FOCUS_INPUT: "focusInput",
 					SET_DEFAULT: "setDefault",
 					EXECUTE: "execute",
 					REFRESH: "refresh"
 				},
 				createQuery: function(text, fields) {
 
-					var query = {
+					var queryObj = {
 						'text': text
 					};
 
 					if (fields) {
-						query.fields = fields;
+						queryObj.fields = fields;
 					}
 
 					if (this.sizeSuggets) {
-						query.size = this.sizeSuggets;
+						queryObj.size = this.sizeSuggets;
 					}
 
-					return query;
+					return queryObj;
 				}
 			};
 
@@ -75,7 +76,6 @@ define([
 			this.on(this.events.CLOSE, this._closeSuggestion);
 			this.on(this.events.OPEN, this._openSuggestion);
 			this.on(this.events.RESET, this._reset);
-			this.on(this.events.FOCUS_INPUT, this._focusInput);
 			this.on(this.events.SET_DEFAULT, this.setValue);
 			this.on(this.events.EXECUTE, this._execute);
 			this.on(this.events.REFRESH, this._refresh);
@@ -99,44 +99,25 @@ define([
 
 			this.textSearchNode = put(this.domNode, "div.textSearch");
 			this.inputAutocompleteNode = put(this.textSearchNode, "input[type=search].autocomplete");
-			this.inputNode = put(this.textSearchNode, "input[type=search][autofocus].inputSearch");
-			this.removeTextNode = put(this.textSearchNode, "i.fa.fa-times.hidden");
+			this.inputNode = put(this.textSearchNode, "input[type=search].inputSearch");
+			this.removeTextNode = put(this.textSearchNode, "i.fa.fa-times." + this.hiddenClass);
 
-			var suggestionsNodeExists = query("div.suggestions.border.hidden", document.body);
+			var suggestionsNodeExists = query('div.' + this.suggestionsContainerClass, this.ownerDocumentBody);
 
 			if (suggestionsNodeExists.length !== 0) {
 				this.boxSuggestionsNode = suggestionsNodeExists[0];
 			} else {
-				this.boxSuggestionsNode = put(document.body, "div.suggestions.border.hidden");
+				this.boxSuggestionsNode = put(this.ownerDocumentBody, 'div.border.' + this.hiddenClass + '.' +
+					this.suggestionsContainerClass);
 			}
 
 			this.inputNode.onkeyup = lang.hitch(this, this._eventChangeText);
 			this.removeTextNode.onclick = lang.hitch(this, this._removeText);
-
-			this.domNode.onmouseleave = lang.hitch(this, this._startTimeout, 'suggestTimeout',
-				this._closeSuggestion, 800);
-			this.domNode.onmouseenter = lang.hitch(this, this._stopTimeout, 'suggestTimeout');
-			this.inputNode.onblur = lang.hitch(this, this._inputNodeNoFocus);
 		},
 
 		_inputNodeNoFocus: function() {
 
 			setTimeout(lang.hitch(this, this._restartLastValueInput), 300);
-		},
-
-		_restartLastValueInput: function() {
-
-			this.setValue(this.lastSearch);
-		},
-
-		_startTimeout: function(nameTimeout, callback, time) {
-
-			this[nameTimeout] = setTimeout(lang.hitch(this, callback), time);
-		},
-
-		_stopTimeout: function(nameTimeout) {
-
-			clearTimeout(this[nameTimeout]);
 		},
 
 		_eventChangeText: function(e) {
@@ -177,8 +158,8 @@ define([
 
 		_selectCharCorrect: function(keyCode) {
 
-			patron = /[a-zA-Z0-9\s]/;
-			charSeleccionado = String.fromCharCode(keyCode);
+			var patron = /[a-zA-Z0-9\s]/;
+			var charSeleccionado = String.fromCharCode(keyCode);
 
 			if ((patron.test(charSeleccionado)) || (keyCode === 46) || (keyCode === 8)) {
 				this.focusIn = -1;
@@ -197,12 +178,12 @@ define([
 
 		_activeRemoveText: function() {
 
-			put(this.removeTextNode, "!hidden");
+			put(this.removeTextNode, '!' + this.hiddenClass);
 		},
 
 		_desactiveRemoveText: function() {
 
-			put(this.removeTextNode, ".hidden");
+			put(this.removeTextNode, '.' + this.hiddenClass);
 		},
 
 		_createButtonSearch: function() {
@@ -283,14 +264,13 @@ define([
 
 			this._cleanChildrenNode(this.boxSuggestionsNode);
 
-			var positionNode = domGeom.position(this.domNode);
+			var positionNode = domGeom.position(this.domNode),
+				tamSuggets = suggestions.length;
 
 			var obj = {top: positionNode.y + 'px', left: positionNode.x + 'px', width: (positionNode.w - 31) + 'px'};
 			domAttr.set(this.boxSuggestionsNode, "style", obj);
 
 			this._openSuggestion();
-
-			tamSuggets = suggestions.length;
 
 			for (var i = 0; i < tamSuggets; i++){
 				var node = this._createSuggest(suggestions[i]);
@@ -411,19 +391,15 @@ define([
 		_closeSuggestion: function() {
 
 			this.focusIn = -1;
-			this._deleteValueInputAutocomplete();
 			this._cleanChildrenNode(this.boxSuggestionsNode);
-			put(this.boxSuggestionsNode, ".hidden");
+			put(this.boxSuggestionsNode, '.' + this.hiddenClass);
 
 			this.emit(this.events.CLOSED);
 		},
 
 		_openSuggestion: function() {
 
-			put(this.boxSuggestionsNode, "!hidden");
-			this.boxSuggestionsNode.onmouseleave = lang.hitch(this, this._startTimeout, 'suggestTimeout',
-				this._closeSuggestion, 800);
-			this.boxSuggestionsNode.onmouseenter = lang.hitch(this, this._stopTimeout, 'suggestTimeout');
+			put(this.boxSuggestionsNode, '!' + this.hiddenClass);
 		},
 
 		getValueInput: function() {
@@ -460,10 +436,6 @@ define([
 		setI18n: function(i18n){
 
 			this.i18n = i18n;
-		},
-
-		_focusInput: function() {
-
 		},
 
 		_reset: function() {
