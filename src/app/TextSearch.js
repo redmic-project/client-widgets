@@ -36,6 +36,12 @@ define([
 				sizeSuggets: null,
 				suggestionsContainerClass: 'suggestions',
 				hiddenClass: 'hidden',
+				innerButtonsContainerClass: 'innerButtons',
+				outerButtonsContainerClass: 'outerButtons',
+				removeTextButtonClass: 'clearTextButton',
+				expandSearchButtonClass: 'expandSearchButton',
+				searchButtonClass: 'searchButton',
+				suggestionsShownClass: 'suggestionsShown',
 				events: {
 					SEARCH_CHANGED: "searchChanged",
 					NEW_SEARCH: "newSearch",
@@ -49,7 +55,8 @@ define([
 					OPEN: "open",
 					SET_DEFAULT: "setDefault",
 					EXECUTE: "execute",
-					REFRESH: "refresh"
+					REFRESH: "refresh",
+					EXPAND_SEARCH: 'expandSearch'
 				},
 				createQuery: function(text, fields) {
 
@@ -92,27 +99,49 @@ define([
 			}
 
 			this._createTextSearch();
-			this._createButtonSearch();
+			this._createInnerButtons();
+			this._createOuterButtons();
+			this._createSuggestions();
 		},
 
 		_createTextSearch: function() {
 
 			this.textSearchNode = put(this.domNode, "div.textSearch");
-			this.inputAutocompleteNode = put(this.textSearchNode, "input[type=search].autocomplete");
 			this.inputNode = put(this.textSearchNode, "input[type=search].inputSearch");
-			this.removeTextNode = put(this.textSearchNode, "i.fa.fa-times." + this.hiddenClass);
+
+			this.inputNode.onkeyup = lang.hitch(this, this._eventChangeText);
+		},
+
+		_createInnerButtons: function() {
+
+			var innerButtonsContainer = put(this.textSearchNode, 'div.' + this.innerButtonsContainerClass);
+
+			this.removeTextNode = put(innerButtonsContainer, 'i.' + this.removeTextButtonClass + '.' +
+				this.hiddenClass);
+
+			this.removeTextNode.onclick = lang.hitch(this, this._removeText);
+		},
+
+		_createOuterButtons: function() {
+
+			var outerButtonsContainer = put(this.domNode, 'div.' + this.outerButtonsContainerClass),
+				searchButton = put(outerButtonsContainer, 'i.' + this.searchButtonClass),
+				expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass);
+
+			searchButton.onclick = lang.hitch(this, this._onClickSearch);
+			expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
+		},
+
+		_createSuggestions: function() {
 
 			var suggestionsNodeExists = query('div.' + this.suggestionsContainerClass, this.ownerDocumentBody);
 
 			if (suggestionsNodeExists.length !== 0) {
 				this.boxSuggestionsNode = suggestionsNodeExists[0];
 			} else {
-				this.boxSuggestionsNode = put(this.ownerDocumentBody, 'div.border.' + this.hiddenClass + '.' +
+				this.boxSuggestionsNode = put(this.ownerDocumentBody, 'div.' + this.hiddenClass + '.' +
 					this.suggestionsContainerClass);
 			}
-
-			this.inputNode.onkeyup = lang.hitch(this, this._eventChangeText);
-			this.removeTextNode.onclick = lang.hitch(this, this._removeText);
 		},
 
 		_inputNodeNoFocus: function() {
@@ -145,10 +174,6 @@ define([
 				this._selectNodeFocus(1);
 			} else if (keyCode === 38) {
 				this._selectNodeFocus(-1);
-			} else if ((keyCode === 39) && (this.getValueInputAutocomplete())) {
-				this.inputAutocompleteNode.value = cleanSpace(this.getValueInputAutocomplete());
-				this.setValueInput(this.getValueInputAutocomplete());
-				this.originalValue = this.getValueInputAutocomplete();
 			} else {
 				return false;
 			}
@@ -176,6 +201,11 @@ define([
 			this.emit(this.events.NEW_SEARCH, this.getValueInput());
 		},
 
+		_expandSearch: function() {
+
+			this.emit(this.events.EXPAND_SEARCH);
+		},
+
 		_activeRemoveText: function() {
 
 			put(this.removeTextNode, '!' + this.hiddenClass);
@@ -184,13 +214,6 @@ define([
 		_desactiveRemoveText: function() {
 
 			put(this.removeTextNode, '.' + this.hiddenClass);
-		},
-
-		_createButtonSearch: function() {
-
-			this.buttonSearchNode = put(this.domNode, "div.buttonSearch.border");
-			put(this.buttonSearchNode, "i.fa.fa-search");
-			this.buttonSearchNode.onclick = lang.hitch(this, this._onClickSearch);
 		},
 
 		_onClickSearch: function() {
@@ -240,7 +263,6 @@ define([
 					} else {
 						this.focusIn = -1;
 						this.setValueInput(this.originalValue);
-						this._updateInputAutocomplete(this.boxSuggestionsNode.firstChild.textContent);
 					}
 				}
 
@@ -267,7 +289,7 @@ define([
 			var positionNode = domGeom.position(this.domNode),
 				tamSuggets = suggestions.length;
 
-			var obj = {top: positionNode.y + 'px', left: positionNode.x + 'px', width: (positionNode.w - 31) + 'px'};
+			var obj = {top: positionNode.y + 'px', left: positionNode.x + 'px', width: (positionNode.w) + 'px'};
 			domAttr.set(this.boxSuggestionsNode, "style", obj);
 
 			this._openSuggestion();
@@ -280,35 +302,6 @@ define([
 			if (tamSuggets === 0) {
 				this._closeSuggestion();
 			}
-
-			if (this.boxSuggestionsNode.children.length !== 0) {
-				this._updateInputAutocomplete(this.boxSuggestionsNode.firstChild.textContent);
-			} else {
-				this.inputAutocompleteNode.value = '';
-			}
-		},
-
-		_updateInputAutocomplete: function(text) {
-
-			text = cleanSpace(text);
-			if (this.boxSuggestionsNode.children.length !== 0) {
-				var spaceValue = '',
-					i = 0;
-
-				while (this.getValueInput().charAt(i) == ' ') {
-					spaceValue += this.getValueInput().charAt(i);
-					i++;
-				}
-
-				var tamValue = this.getValueInput().length - spaceValue.length;
-
-				this.inputAutocompleteNode.value = this.getValueInput() + text.substring(tamValue, text.length);
-			}
-		},
-
-		_deleteValueInputAutocomplete: function() {
-
-			this.inputAutocompleteNode.value = '';
 		},
 
 		_createSuggest: function(item) {
@@ -351,11 +344,9 @@ define([
 			}
 
 			this.focusIn = spanNode;
-			put(spanNode, ".hover");
 
 			if (change) {
 				this.setValueInput(spanNode.textContent);
-				this._updateInputAutocomplete(spanNode.textContent);
 			}
 		},
 
@@ -363,12 +354,7 @@ define([
 
 			if (change) {
 				this.setValueInput(this.originalValue);
-				if (this.boxSuggestionsNode.children.length !== 0) {
-					this._updateInputAutocomplete(this.boxSuggestionsNode.firstChild.textContent);
-				}
 			}
-
-			put(spanNode, "!hover");
 		},
 
 		_selectSuggestion: function(spanNode) {
@@ -393,6 +379,7 @@ define([
 			this.focusIn = -1;
 			this._cleanChildrenNode(this.boxSuggestionsNode);
 			put(this.boxSuggestionsNode, '.' + this.hiddenClass);
+			put(this.domNode, '!' + this.suggestionsShownClass);
 
 			this.emit(this.events.CLOSED);
 		},
@@ -400,6 +387,7 @@ define([
 		_openSuggestion: function() {
 
 			put(this.boxSuggestionsNode, '!' + this.hiddenClass);
+			put(this.domNode, '.' + this.suggestionsShownClass);
 		},
 
 		getValueInput: function() {
@@ -426,11 +414,6 @@ define([
 			if (!value) {
 				this._desactiveRemoveText();
 			}
-		},
-
-		getValueInputAutocomplete: function() {
-
-			return this.inputAutocompleteNode.value;
 		},
 
 		setI18n: function(i18n){
