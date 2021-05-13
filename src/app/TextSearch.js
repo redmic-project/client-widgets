@@ -107,7 +107,7 @@ define([
 		_createTextSearch: function() {
 
 			this.textSearchNode = put(this.domNode, "div.textSearch");
-			this.inputNode = put(this.textSearchNode, "input[type=search].inputSearch");
+			this.inputNode = put(this.textSearchNode, "input[type=search]");
 
 			this.inputNode.onkeyup = lang.hitch(this, this._eventChangeText);
 		},

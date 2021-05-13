@@ -144,7 +144,7 @@ define([
 
 			this.filteringSelectNode = put(this.domNode, "div.textSearch");
 			this.inputAutocompleteNode = put(this.filteringSelectNode, "input[type=search].autocomplete");
-			this.inputNode = put(this.filteringSelectNode, "input[type=search].inputSearch");
+			this.inputNode = put(this.filteringSelectNode, "input[type=search]");
 			this.removeTextNode = put(this.filteringSelectNode, "i.fa.fa-times.hidden");
 
 			this.inputNode.onfocus = lang.hitch(this, this._activeInput);
