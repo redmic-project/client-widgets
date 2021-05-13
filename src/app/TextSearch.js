@@ -117,7 +117,7 @@ define([
 			var innerButtonsContainer = put(this.textSearchNode, 'div.' + this.innerButtonsContainerClass);
 
 			this.removeTextNode = put(innerButtonsContainer, 'i.' + this.removeTextButtonClass + '.' +
-				this.hiddenClass);
+				this.hiddenClass + '[title=' + this.i18n.remove + ']');
 
 			this.removeTextNode.onclick = lang.hitch(this, this._removeText);
 		},
@@ -125,8 +125,11 @@ define([
 		_createOuterButtons: function() {
 
 			var outerButtonsContainer = put(this.domNode, 'div.' + this.outerButtonsContainerClass),
-				searchButton = put(outerButtonsContainer, 'i.' + this.searchButtonClass),
-				expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass);
+				searchButton = put(outerButtonsContainer, 'i.' + this.searchButtonClass +
+					'[title=' + this.i18n.search + ']'),
+
+				expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass + '[title=' +
+					this.i18n.advancedSearch + ']');
 
 			searchButton.onclick = lang.hitch(this, this._onClickSearch);
 			expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
@@ -250,15 +253,14 @@ define([
 		_selectNodeFocus: function(num) {
 
 			if (this.boxSuggestionsNode.children.length !== 0) {
-				if ((this.focusIn === -1)) {
-					num === 1 ? this.focusIn = this.boxSuggestionsNode.firstChild :
-						this.focusIn = this.boxSuggestionsNode.lastChild;
+				if (this.focusIn === -1) {
+					this.focusIn = num === 1 ? this.boxSuggestionsNode.firstChild : this.boxSuggestionsNode.lastChild;
 				} else {
 					this.focusIn.onblur();
 
-					if ((num === 1) && (this.boxSuggestionsNode.lastChild !== this.focusIn)) {
+					if (num === 1 && this.boxSuggestionsNode.lastChild !== this.focusIn) {
 						this.focusIn = this.focusIn.nextSibling;
-					} else if ((num === -1) && (this.boxSuggestionsNode.firstChild != this.focusIn)) {
+					} else if (num === -1 && this.boxSuggestionsNode.firstChild != this.focusIn) {
 						this.focusIn = this.focusIn.previousSibling;
 					} else {
 						this.focusIn = -1;
