@@ -59,11 +59,8 @@ define([
 
 		_render: function() {
 
-			var item ;
-
 			if (Object.keys(this.instance).length !== 0) {
-				for (item in this.instance) {
-
+				for (var item in this.instance) {
 					this.instance[item].termSelection = this.instance[item].widget.termSelection;
 				}
 			}
@@ -71,49 +68,52 @@ define([
 			this._cleanChildrenNode();
 
 			for (var i = 0; i < this.order.length; i++) {
-				item = this.order[i];
-
-				var content = this.config.aggregations[item],
-					open;
-
-				if (!content) {
-					continue;
-				}
-
-				if (!content.buckets) {
-					content = content[item];
-				}
-
-				if (this.instance && this.instance[item] && (this.instance[item].termSelection.length != 0)) {
-					open = true;
-				} else if (this.aggs && this.aggs[item] && this.aggs[item].open) {
-					open = this.aggs[item].open;
-				} else {
-					open = this.openFacets;
-				}
-
-				var widget = new Facet({
-						termSelection: (this.instance && this.instance[item]) ? this.instance[item].termSelection : [],
-						label: item,
-						termsFieldFacet: (this.aggs && this.aggs[item]) ? this.aggs[item].terms.field : item,
-						title: (this.i18n && this.i18n[item]) ? this.i18n[item] : item,
-						i18n: this.i18n,
-						open: open,
-						config: content,
-						maxInitialEntries: this.maxInitialEntries
-					}).placeAt(this.domNode);
-
-				this.instance[item] = {
-					'widget': widget,
-					'termSelection': []
-				};
-
-				if (widget.termSelection.length != 0) {
-					widget.emit(widget.events.TERMS_CHANGED);
-				}
-
-				widget.on(this.events.UPDATE_QUERY, lang.hitch(this, this.updateQuery));
+				this._renderItem(this.order[i]);
 			}
+		},
+
+		_renderItem: function(item) {
+
+			var content = this.config.aggregations[item],
+				open;
+
+			if (!content) {
+				return;
+			}
+
+			if (!content.buckets) {
+				content = content[item];
+			}
+
+			if (this.instance && this.instance[item] && (this.instance[item].termSelection.length != 0)) {
+				open = true;
+			} else if (this.aggs && this.aggs[item] && this.aggs[item].open) {
+				open = this.aggs[item].open;
+			} else {
+				open = this.openFacets;
+			}
+
+			var widget = new Facet({
+				termSelection: (this.instance && this.instance[item]) ? this.instance[item].termSelection : [],
+				label: item,
+				termsFieldFacet: (this.aggs && this.aggs[item]) ? this.aggs[item].terms.field : item,
+				title: (this.i18n && this.i18n[item]) ? this.i18n[item] : item,
+				i18n: this.i18n,
+				open: open,
+				config: content,
+				maxInitialEntries: this.maxInitialEntries
+			}).placeAt(this.domNode);
+
+			this.instance[item] = {
+				'widget': widget,
+				'termSelection': []
+			};
+
+			if (widget.termSelection.length != 0) {
+				widget.emit(widget.events.TERMS_CHANGED);
+			}
+
+			widget.on(this.events.UPDATE_QUERY, lang.hitch(this, this.updateQuery));
 		},
 
 		_cleanChildrenNode: function() {
