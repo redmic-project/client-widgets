@@ -48,6 +48,10 @@ define([
 			this.config = {
 				idProperty: 'id',
 				labelAttr: 'name',
+				hiddenClass: 'hidden',
+				innerButtonsContainerClass: 'innerButtons',
+				removeTextButtonClass: 'clearTextButton',
+				suggestionsContainerClass: 'suggestions',
 				value: null,
 				required: false,
 				label: '',
@@ -143,12 +147,16 @@ define([
 		_createFilteringSelect: function() {
 
 			this.filteringSelectNode = put(this.domNode, "div.textSearch");
+
 			this.inputAutocompleteNode = put(this.filteringSelectNode, "input[type=search].autocomplete");
 			this.inputNode = put(this.filteringSelectNode, "input[type=search]");
-			this.removeTextNode = put(this.filteringSelectNode, "i.fa.fa-times.hidden");
 
-			this.inputNode.onfocus = lang.hitch(this, this._activeInput);
-			this.inputNode.onblur = lang.hitch(this, this._desactiveInput);
+			var innerButtonsContainer = put(this.filteringSelectNode, 'div.' + this.innerButtonsContainerClass);
+
+			this.removeTextNode = put(innerButtonsContainer, 'i.' + this.removeTextButtonClass + '.' +
+				this.hiddenClass + '[title=' + this.i18n.remove + ']');
+
+			this.inputNode.onblur = lang.hitch(this, this._onInputBlur);
 
 			this.inputNode.onkeyup = lang.hitch(this, this._eventChangeText);
 			this.inputNode.onkeydown = lang.hitch(this, this._eventCloseOnKeyDown);
@@ -261,12 +269,12 @@ define([
 
 		_activeRemoveText: function() {
 
-			put(this.removeTextNode, "!hidden");
+			put(this.removeTextNode, '!' + this.hiddenClass);
 		},
 
 		_desactiveRemoveText: function() {
 
-			put(this.removeTextNode, ".hidden");
+			put(this.removeTextNode, '.' + this.hiddenClass);
 		},
 
 		_getValueInput: function() {
@@ -412,7 +420,7 @@ define([
 
 		_createButtonFiltering: function() {
 
-			this.buttonFilteringNode = put(this.domNode, "div.buttonSearch.border");
+			this.buttonFilteringNode = put(this.domNode, "div.buttonSearch");
 			put(this.buttonFilteringNode, "i.fa.fa-caret-down");
 			this.buttonFilteringNode.onclick = lang.hitch(this, this._clickFiltering);
 		},
@@ -481,7 +489,7 @@ define([
 			}
 
 			this._cleanChildrenNode(this.boxResultsNode);
-			this.boxResultsNode = put(document.body, "div.filteringResult.border.hidden");
+			this.boxResultsNode = put(document.body, 'div.' + this.suggestionsContainerClass + '.' + this.hiddenClass);
 
 			var positionNode = domGeom.position(this.domNode);
 
@@ -522,8 +530,6 @@ define([
 				this._addEventsPagination(paginationNode, +this.count);
 			}
 
-			this._activeInput();
-
 			if (this.boxResultsNode.children.length !== 0) {
 				this._selectAutocompleteNode();
 			} else if (this._getValueInput().length !== 0) {
@@ -535,18 +541,9 @@ define([
 			this.validate();
 		},
 
-		_activeInput: function() {
-
-			put(this.inputNode, ".activeSuggest");
-			put(this.buttonFilteringNode, ".activeSuggest");
-		},
-
-		_desactiveInput: function() {
+		_onInputBlur: function() {
 
 			this.validate();
-
-			put(this.inputNode, "!activeSuggest");
-			put(this.buttonFilteringNode, "!activeSuggest");
 		},
 
 		_insertPagination: function(text) {
@@ -676,7 +673,7 @@ define([
 
 		_openResults: function() {
 
-			put(this.boxResultsNode, "!hidden");
+			put(this.boxResultsNode, '!' + this.hiddenClass);
 			this.boxResultsNode.onmouseleave = lang.hitch(this, this._startTimeOut, this._closeResults);
 			this.boxResultsNode.onmouseenter = lang.hitch(this, this._stopTimeOut);
 		},

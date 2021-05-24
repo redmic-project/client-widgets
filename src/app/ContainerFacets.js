@@ -105,8 +105,8 @@ define([
 			}).placeAt(this.domNode);
 
 			this.instance[item] = {
-				'widget': widget,
-				'termSelection': []
+				widget: widget,
+				termSelection: []
 			};
 
 			if (widget.termSelection.length != 0) {
