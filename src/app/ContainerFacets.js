@@ -74,7 +74,8 @@ define([
 
 		_renderItem: function(item) {
 
-			var content = this.config.aggregations[item],
+			var facetsPrefix = 'sterms#',
+				content = this.config.aggregations[item],
 				open;
 
 			if (!content) {
@@ -82,7 +83,7 @@ define([
 			}
 
 			if (!content.buckets) {
-				content = content[item];
+				content = content[item] || content[facetsPrefix + item];
 			}
 
 			if (this.instance && this.instance[item] && (this.instance[item].termSelection.length != 0)) {
