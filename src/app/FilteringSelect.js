@@ -493,7 +493,7 @@ define([
 
 			var positionNode = domGeom.position(this.domNode);
 
-			var obj = {top: positionNode.y + 'px', left: positionNode.x + 'px', width: positionNode.w + 'px'};
+			var obj = {top: (positionNode.y + positionNode.h) + 'px', left: positionNode.x + 'px', width: positionNode.w + 'px'};
 			domAttr.set(this.boxResultsNode, "style", obj);
 
 			this._openResults();
