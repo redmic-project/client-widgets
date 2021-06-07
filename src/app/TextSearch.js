@@ -5,6 +5,7 @@ define([
 	, "dojo/Evented"
 	, "put-selector/put"
 	, "dojo/dom-attr"
+	, "dojo/dom-construct"
 	, "dojo/dom-geometry"
 	, "dojo/query"
 ], function(
@@ -14,6 +15,7 @@ define([
 	, Evented
 	, put
 	, domAttr
+	, domConstruct
 	, domGeom
 	, query
 ) {
@@ -52,7 +54,6 @@ define([
 					CLOSE: "close",
 					CLOSED: "closed",
 					RESET: "reset",
-					OPEN: "open",
 					SET_DEFAULT: "setDefault",
 					EXECUTE: "execute",
 					REFRESH: "refresh",
@@ -81,7 +82,6 @@ define([
 			this.on(this.events.SEARCH_CHANGED, this._requestSuggestions);
 			this.on(this.events.RECEIVED_SUGGESTS, this._addSuggestions);
 			this.on(this.events.CLOSE, this._closeSuggestion);
-			this.on(this.events.OPEN, this._openSuggestion);
 			this.on(this.events.RESET, this._reset);
 			this.on(this.events.SET_DEFAULT, this.setValue);
 			this.on(this.events.EXECUTE, this._execute);
@@ -101,7 +101,6 @@ define([
 			this._createTextSearch();
 			this._createInnerButtons();
 			this._createOuterButtons();
-			this._createSuggestions();
 		},
 
 		_createTextSearch: function() {
@@ -142,8 +141,7 @@ define([
 			if (suggestionsNodeExists.length !== 0) {
 				this.boxSuggestionsNode = suggestionsNodeExists[0];
 			} else {
-				this.boxSuggestionsNode = put(this.ownerDocumentBody, 'div.' + this.hiddenClass + '.' +
-					this.suggestionsContainerClass);
+				this.boxSuggestionsNode = put(this.ownerDocumentBody, 'div.' + this.suggestionsContainerClass);
 			}
 		},
 
@@ -286,16 +284,9 @@ define([
 
 		_addSuggestions: function(/*JSON*/ suggestions) {
 
-			this._cleanChildrenNode(this.boxSuggestionsNode);
-
-			var positionNode = domGeom.position(this.domNode),
-				tamSuggets = suggestions.length;
-
-			var obj = {top: (positionNode.y + positionNode.h) + 'px', left: positionNode.x + 'px', width: (positionNode.w) + 'px'};
-			domAttr.set(this.boxSuggestionsNode, "style", obj);
-
 			this._openSuggestion();
 
+			var tamSuggets = suggestions.length;
 			for (var i = 0; i < tamSuggets; i++){
 				var node = this._createSuggest(suggestions[i]);
 				this._addEventsSugget(node);
@@ -371,16 +362,13 @@ define([
 
 		_cleanChildrenNode: function(node) {
 
-			while (node.firstChild) {
-				node.removeChild(node.firstChild);
-			}
+			domConstruct.destroy(node);
 		},
 
 		_closeSuggestion: function() {
 
 			this.focusIn = -1;
 			this._cleanChildrenNode(this.boxSuggestionsNode);
-			put(this.boxSuggestionsNode, '.' + this.hiddenClass);
 			put(this.domNode, '!' + this.suggestionsShownClass);
 
 			this.emit(this.events.CLOSED);
@@ -388,7 +376,17 @@ define([
 
 		_openSuggestion: function() {
 
-			put(this.boxSuggestionsNode, '!' + this.hiddenClass);
+			this._cleanChildrenNode(this.boxSuggestionsNode);
+			this._createSuggestions();
+
+			var positionNode = domGeom.position(this.domNode);
+			var obj = {
+				top: (positionNode.y + positionNode.h) + 'px',
+				left: positionNode.x + 'px',
+				width: positionNode.w + 'px'
+			};
+			domAttr.set(this.boxSuggestionsNode, 'style', obj);
+
 			put(this.domNode, '.' + this.suggestionsShownClass);
 		},
 
