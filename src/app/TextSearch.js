@@ -125,13 +125,13 @@ define([
 
 			var outerButtonsContainer = put(this.domNode, 'div.' + this.outerButtonsContainerClass),
 				searchButton = put(outerButtonsContainer, 'i.' + this.searchButtonClass +
-					'[title=' + this.i18n.search + ']'),
+					'[title=' + this.i18n.search + ']');
 
-				expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass + '[title=' +
-					this.i18n.advancedSearch + ']');
+			this.expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass + '[title=' +
+				this.i18n.advancedSearch + ']');
 
 			searchButton.onclick = lang.hitch(this, this._onClickSearch);
-			expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
+			this.expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
 		},
 
 		_createSuggestions: function() {
@@ -204,7 +204,9 @@ define([
 
 		_expandSearch: function() {
 
-			this.emit(this.events.EXPAND_SEARCH);
+			this.emit(this.events.EXPAND_SEARCH, {
+				node: this.expandSearchNode
+			});
 		},
 
 		_activeRemoveText: function() {
