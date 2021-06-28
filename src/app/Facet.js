@@ -29,7 +29,11 @@ define([
 				hiddenClass: 'hidden',
 				events: {
 					TERMS_CHANGED: "termsChanged",
-					UPDATE_QUERY: "updateQuery"
+					UPDATE_QUERY: "updateQuery",
+					SHOW_MORE: 'showMore',
+					SHOW_LESS: 'showLess',
+					OPEN: 'open',
+					CLOSE: 'close'
 				}
 			};
 
@@ -56,6 +60,9 @@ define([
 			this.inherited(arguments);
 
 			this._evaluateOpenStatus();
+
+			var evt = this.open ? 'OPEN' : 'CLOSE';
+			this.emit(this.events[evt], this.label);
 		},
 
 		_evaluateNumberOfBuckets: function() {
@@ -63,10 +70,17 @@ define([
 			var buckets = this.config.buckets;
 			if (buckets.length > this.maxInitialEntries) {
 				this._outerNode = query('.' + this.facetsEntriesContainerClass, this.domNode)[0];
-				put(this._outerNode, '.' + this.collapseEntriesClass);
+
+				var toggleText;
+				if (this.expanded) {
+					toggleText = this.i18n.showLess;
+				} else {
+					toggleText = this.i18n.showMore;
+					put(this._outerNode, '.' + this.collapseEntriesClass);
+				}
 
 				this._toggleNode = put(this.domNode, 'span.' + this.collapseToggleClass);
-				this._setToggleShowText(this.i18n.showMore);
+				this._setToggleShowText(toggleText);
 				this._toggleNode.onclick = lang.hitch(this, this._onToggleShowMore);
 
 				this._evaluateOpenStatus();
@@ -83,9 +97,11 @@ define([
 			if (query('.' + this.collapseEntriesClass, this.domNode).length) {
 				put(this._outerNode, '!' + this.collapseEntriesClass);
 				this._setToggleShowText(this.i18n.showLess);
+				this.emit(this.events.SHOW_MORE, this.label);
 			} else {
 				put(this._outerNode, '.' + this.collapseEntriesClass);
 				this._setToggleShowText(this.i18n.showMore);
+				this.emit(this.events.SHOW_LESS);
 			}
 		},
 
