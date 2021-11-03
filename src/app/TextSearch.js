@@ -44,6 +44,7 @@ define([
 				expandSearchButtonClass: 'expandSearchButton',
 				searchButtonClass: 'searchButton',
 				suggestionsShownClass: 'suggestionsShown',
+				showExpandIcon: false,
 				events: {
 					SEARCH_CHANGED: "searchChanged",
 					NEW_SEARCH: "newSearch",
@@ -127,11 +128,14 @@ define([
 				searchButton = put(outerButtonsContainer, 'i.' + this.searchButtonClass +
 					'[title=' + this.i18n.search + ']');
 
-			this.expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass + '[title=' +
-				this.i18n.advancedSearch + ']');
-
 			searchButton.onclick = lang.hitch(this, this._onClickSearch);
-			this.expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
+
+			if (this.showExpandIcon) {
+				this.expandSearchNode = put(outerButtonsContainer, 'i.' + this.expandSearchButtonClass + '[title=' +
+					this.i18n.advancedSearch + ']');
+
+				this.expandSearchNode.onclick = lang.hitch(this, this._expandSearch);
+			}
 		},
 
 		_createSuggestions: function() {
@@ -203,6 +207,10 @@ define([
 		},
 
 		_expandSearch: function() {
+
+			if (!this.showExpandIcon) {
+				return;
+			}
 
 			this.emit(this.events.EXPAND_SEARCH, {
 				node: this.expandSearchNode
