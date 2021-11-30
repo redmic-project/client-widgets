@@ -503,7 +503,7 @@ dojo-dstore@^1.1.2:
   dependencies:
     dojo "^1.9.0"
 
-dojo@1.13.0, dojo@^1.13.0, dojo@^1.9.0:
+dojo@1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/dojo/-/dojo-1.13.0.tgz#62a7c53628f4f7acfa791a96924c67f39cd5861b"
   integrity sha512-mGoGvsXAbPkUrBnxCoO7m6CFH8jvWq7rAL7fP7jrhJEOyswA/bZwWdXwEH0ovs68t8S0+xOpV/3V7addYbaiAA==
@@ -512,6 +512,11 @@ dojo@2.0.0-alpha.7:
   version "2.0.0-alpha.7"
   resolved "https://registry.yarnpkg.com/dojo/-/dojo-2.0.0-alpha.7.tgz#c2b25d43d8f72ccc9c8fe89a34906a2d271e5c91"
   integrity sha1-wrJdQ9j3LMycj+iaNJBqLSceXJE=
+
+dojo@^1.13.7, dojo@^1.9.0:
+  version "1.13.7"
+  resolved "https://registry.yarnpkg.com/dojo/-/dojo-1.13.7.tgz#8dcdb017c8fd0d001638e9447a67f286c248bff6"
+  integrity sha512-dghZxPsmYYX0fvORQbMT111CndnUUn8lWLAPfIyQwhryvGeVifD/r9A0G0kj6b8iK1ACyXMcsT9zxrWZHmVwxg==
 
 duplexer2@~0.1.0:
   version "0.1.4"
