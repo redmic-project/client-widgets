@@ -3,26 +3,37 @@ define([
 	, "dijit/TitlePane"
 	, "dojo/_base/lang"
 	, "dojo/Evented"
+	, 'dojo/query'
 	, "put-selector/put"
 ], function(
 	declare
 	, TitlePane
 	, lang
 	, Evented
+	, query
 	, put
 ) {
 
 	return declare([TitlePane, Evented], {
 
-		constructor: function(args){
+		constructor: function(args) {
 
 			this.config = {
+				maxInitialEntries: 5,
 				termsFieldFacet: null,
 				termSelection: [],
 				bucketsKeys: [],
+				facetsEntriesContainerClass: 'dijitTitlePaneContentOuter',
+				collapseEntriesClass: 'collapseEntries',
+				collapseToggleClass: 'collapseToggle',
+				hiddenClass: 'hidden',
 				events: {
 					TERMS_CHANGED: "termsChanged",
-					UPDATE_QUERY: "updateQuery"
+					UPDATE_QUERY: "updateQuery",
+					SHOW_MORE: 'showMore',
+					SHOW_LESS: 'showLess',
+					OPEN: 'open',
+					CLOSE: 'close'
 				}
 			};
 
@@ -38,6 +49,68 @@ define([
 			this.domNode.removeAttribute('widgetId');
 
 			this.inherited(arguments);
+
+			if (this.maxInitialEntries > 0) {
+				this._evaluateNumberOfBuckets();
+			}
+		},
+
+		_onTitleClick: function() {
+
+			this.inherited(arguments);
+
+			this._evaluateOpenStatus();
+
+			var evt = this.open ? 'OPEN' : 'CLOSE';
+			this.emit(this.events[evt], this.label);
+		},
+
+		_evaluateNumberOfBuckets: function() {
+
+			var buckets = this.config.buckets;
+			if (buckets.length > this.maxInitialEntries) {
+				this._outerNode = query('.' + this.facetsEntriesContainerClass, this.domNode)[0];
+
+				var toggleText;
+				if (this.expanded) {
+					toggleText = this.i18n.showLess;
+				} else {
+					toggleText = this.i18n.showMore;
+					put(this._outerNode, '.' + this.collapseEntriesClass);
+				}
+
+				this._toggleNode = put(this.domNode, 'span.' + this.collapseToggleClass);
+				this._setToggleShowText(toggleText);
+				this._toggleNode.onclick = lang.hitch(this, this._onToggleShowMore);
+
+				this._evaluateOpenStatus();
+			}
+		},
+
+		_evaluateOpenStatus: function() {
+
+			put(this._toggleNode, (this.open ? '!' : '.') + this.hiddenClass);
+		},
+
+		_onToggleShowMore: function() {
+
+			if (query('.' + this.collapseEntriesClass, this.domNode).length) {
+				put(this._outerNode, '!' + this.collapseEntriesClass);
+				this._setToggleShowText(this.i18n.showLess);
+				this.emit(this.events.SHOW_MORE, this.label);
+			} else {
+				put(this._outerNode, '.' + this.collapseEntriesClass);
+				this._setToggleShowText(this.i18n.showMore);
+				this.emit(this.events.SHOW_LESS);
+			}
+		},
+
+		_setToggleShowText: function(text) {
+
+			var total = this.config.buckets.length,
+				fullText = text + ' (' + total + ')';
+
+			this._toggleNode.innerHTML = fullText;
 		},
 
 		_render: function() {
@@ -64,7 +137,7 @@ define([
 
 		_insertBucket: function(bucket) {
 
-			var label,
+			var labelText,
 				key = bucket.key;
 
 			if (this.i18n && this.i18n[key]) {
@@ -74,10 +147,12 @@ define([
 			}
 
 			var id_random = this._generateIDRandom(),
-			    bucketNode = put(this.containerBucketsNode, "div.containerBucket");
-			    labelNode = put(bucketNode, "label[for=$][title=$].inlineRow.labelBucket", id_random, labelText, labelText),
-			    put(bucketNode, "label[for=$].labelBucket", id_random, "(" + bucket.doc_count + ")"),
-			    checkBoxNode = put(labelNode, "-input[type='checkbox'][id=$][data-redmic-id=$]", id_random, key);
+				bucketNode = put(this.containerBucketsNode, "div.containerBucket"),
+				labelNode = put(bucketNode, "label[for=$][title=$].inlineRow.labelBucket", id_random, labelText, labelText);
+
+			put(bucketNode, "label[for=$].labelBucket", id_random, "(" + bucket.doc_count + ")");
+
+			var checkBoxNode = put(labelNode, "-input[type='checkbox'][id=$][data-redmic-id=$]", id_random, key);
 
 			checkBoxNode.onchange = lang.hitch(this, this._eventClickCheckBox, checkBoxNode.getAttribute('data-redmic-id'));
 

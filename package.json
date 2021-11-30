@@ -1,13 +1,12 @@
 {
-  "name": "Widgets",
-  "version": "0.10.1",
-  "author": "Observatorio Ambiental Granadilla",
-  "homepage": "https://redmic.es",
+  "name": "redmic-widgets",
+  "version": "0.21.0",
+  "author": "REDMIC",
+  "homepage": "https://gitlab.com/redmic-project/client/widgets/blob/master/README.md",
   "description": "Colección de widgets para REDMIC",
   "contributors": [
     {
-      "name": "Ignacio Lorenzo García",
-      "email": "nacho@oag-fundacion.org"
+      "name": "Ignacio Lorenzo García"
     },
     {
       "name": "Pedro E. Trujillo Brito",
@@ -18,13 +17,12 @@
       "email": "noel@redmic.es"
     },
     {
-      "name": "Carlos Alberto González Carballo",
-      "email": "carlos@redmic.es"
+      "name": "Carlos Alberto González Carballo"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "http://git.redmic.net/redmic-client/widgets.git"
+    "url": "https://gitlab.com/redmic-project/client/widgets.git"
   },
   "private": true,
   "scripts": {
