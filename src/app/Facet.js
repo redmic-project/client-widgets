@@ -115,7 +115,7 @@ define([
 
 		_render: function() {
 
-			this.containerBucketsNode = put("div[data-redmic-id=$].bucket", this.title);
+			this.containerBucketsNode = put("div[data-redmic-id=$].bucket", this.label);
 			this.content = this.containerBucketsNode;
 
 			var buckets = this.config.buckets;
