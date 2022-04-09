@@ -35,7 +35,7 @@
     "dojo-dstore": "^1.1.2",
     "leaflet": "^1.2.0",
     "leaflet-areaselect": "https://github.com/heyman/leaflet-areaselect.git#master",
-    "moment": "^2.19.1",
+    "moment": "^2.29.2",
     "put-selector": "^0.3.6"
   },
   "devDependencies": {
